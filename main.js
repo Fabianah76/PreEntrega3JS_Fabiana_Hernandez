@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('formEncuesta');
     const resultadosDiv = document.getElementById('resultados');
@@ -47,15 +48,17 @@ document.addEventListener("DOMContentLoaded", () => {
             costoTrans: parseFloat(costoTrans.value)
         };
 
-        // Calcular el Valor Social del Tiempo
-        let pregunta7 = respuesta.tiempoResol * 1692;
-        let VST = parseInt(pregunta7);
-        alert("Valor social del tiempo: " + VST + "\n" + "Presione [Aceptar] para continuar con la encuesta.");
-        console.log("Valor social del tiempo:", VST);
+        // Calcular el Valor Social del Tiempo (VST)
+        let VST = respuesta.tiempoResol * 1692;
 
-        // Guardar respuesta en el array de respuestas
+        // Guardar respuesta con VST
+        respuesta.VST = VST;
         respuestas.push(respuesta);
         contador++;
+
+        // Mostrar el VST por alerta
+        alert("Valor social del tiempo: " + VST + "\n" + "Presione [Aceptar] para continuar con la encuesta.");
+        console.log("Valor social del tiempo:", VST);
 
         // Mostrar mensaje mientras se recopilan los datos
         if (contador < totalEjecutions) {
@@ -79,8 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         respuestas.forEach(resp => {
-            let cargaBurocratica = resp.tiempoLectura + resp.tiempoLlenado + resp.tiempoTraslado + resp.tiempoInicio + resp.tiempoResol + resp.tarifaTramite + (resp.visitasIE * resp.costoTrans);
-            
+            // Calcular la carga burocrática incluyendo el VST
+            let cargaBurocratica = resp.tiempoLectura + resp.tiempoLlenado + resp.tiempoTraslado + resp.tiempoInicio + resp.tiempoResol + resp.tarifaTramite + (resp.visitasIE * resp.costoTrans) + resp.VST;
+
             switch (resp.modTramite) {
                 case '1':
                     sumas.modTramite1.total += cargaBurocratica;
