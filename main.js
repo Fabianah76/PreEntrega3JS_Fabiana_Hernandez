@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('formEncuesta');
     const resultadosDiv = document.getElementById('resultados');
@@ -53,14 +52,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Guardar respuesta con VST
         respuesta.VST = VST;
+
+        // Calcular la carga burocrática
+        let cargaBurocratica = respuesta.tiempoLectura + respuesta.tiempoLlenado + respuesta.tiempoTraslado + respuesta.tiempoInicio + respuesta.tiempoResol + respuesta.tarifaTramite + (respuesta.visitasIE * respuesta.costoTrans) + respuesta.VST;
+
+        // Agregar cargaBurocratica a la respuesta
+        respuesta.cargaBurocratica = cargaBurocratica;
+
+        // Guardar en el local storage
+        localStorage.setItem(`respuesta_${contador + 1}`, JSON.stringify(respuesta));
+
+        // Agregar respuesta al array
         respuestas.push(respuesta);
-        contador++;
+
+        // Mostrar cada respuesta en la consola
+        console.log("Respuesta capturada:", respuesta);
+        console.log("Carga burocrática:", cargaBurocratica);
+
+        // Mostrar el contenido del local storage
+        console.log("Contenido del local storage:", localStorage);
 
         // Mostrar el VST por alerta
-        alert("Valor social del tiempo: " + VST + "\n" + "Presione [Aceptar] para continuar con la encuesta.");
-        console.log("Valor social del tiempo:", VST);
-
+        alert("Valor social del tiempo: " + VST + "\n" + "Carga burocrática: " + cargaBurocratica + "\nPresione [Aceptar] para continuar con la encuesta.");
+        
         // Mostrar mensaje mientras se recopilan los datos
+        contador++;
         if (contador < totalEjecutions) {
             alert(`Encuesta completada ${contador} de ${totalEjecutions}. Por favor, vuelve a llenar el formulario.`);
             form.reset();
@@ -82,8 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         respuestas.forEach(resp => {
-            // Calcular la carga burocrática incluyendo el VST
-            let cargaBurocratica = resp.tiempoLectura + resp.tiempoLlenado + resp.tiempoTraslado + resp.tiempoInicio + resp.tiempoResol + resp.tarifaTramite + (resp.visitasIE * resp.costoTrans) + resp.VST;
+            // Calcular la carga burocrática
+            let cargaBurocratica = resp.cargaBurocratica;
 
             switch (resp.modTramite) {
                 case '1':
